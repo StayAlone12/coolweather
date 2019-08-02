@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,7 @@ import okhttp3.Response;
  * @since 2019-07-23
  */
 public class WeatherActivity extends AppCompatActivity {
+    private static final String TAG = "WeatherActivity";
     public DrawerLayout drawerLayout;
 
     private Button navButton;
@@ -151,6 +153,7 @@ public class WeatherActivity extends AppCompatActivity {
     public void requestWeather(final String weatherId) {
         String weatherUrl =
             "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=bc0418b57b2d4918819d3974ac1285d9";
+        Log.e(TAG, "weatherUrl: "+weatherUrl );
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -167,7 +170,9 @@ public class WeatherActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String responseText = response.body().string();
+                Log.e(TAG, "responseText: "+responseText);
                 final Weather weather = Utility.handleWeatherResponse(responseText);
+                Log.e(TAG, "weather: "+weather);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

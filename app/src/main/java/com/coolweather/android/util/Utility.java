@@ -5,6 +5,7 @@
 package com.coolweather.android.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.coolweather.android.db.City;
 import com.coolweather.android.db.County;
@@ -23,7 +24,7 @@ import org.json.JSONObject;
  * @since 2019-07-22
  */
 public class Utility {
-
+    private static final String TAG = "Utility";
     /**
      * 解析和处理服务器返回的省级数据
      * 
@@ -31,7 +32,7 @@ public class Utility {
      * @return true:解析成功 false:解析失败
      */
     public static boolean handleProvinceReqponse(String response) {
-        if (TextUtils.isEmpty(response)) {
+        if (!TextUtils.isEmpty(response)) {
             try {
                 JSONArray allProvinces = new JSONArray(response);
                 for (int i = 0; i < allProvinces.length(); i++) {
@@ -111,7 +112,8 @@ public class Utility {
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
-            String weatherContent = jsonArray.getJSONArray(0).toString();
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            Log.e(TAG, "weatherContent: "+weatherContent);
             return new Gson().fromJson(weatherContent,Weather.class);
         }catch (Exception e){
             e.printStackTrace();

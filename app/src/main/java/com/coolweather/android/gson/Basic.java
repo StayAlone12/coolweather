@@ -28,6 +28,7 @@ public class Basic {
     public Update update;
 
     public class Update {
+        @SerializedName("utc")
         public String updateTime;
     }
 }

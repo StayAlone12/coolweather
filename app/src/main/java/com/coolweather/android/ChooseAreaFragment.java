@@ -48,11 +48,11 @@ import okhttp3.Response;
 public class ChooseAreaFragment extends Fragment {
     private static final String TAG = "ChooseAreaFragment";
 
-    public static final int LEVEL_PROVINCE = 0;
+    private static final int LEVEL_PROVINCE = 0;
 
-    public static final int LEVEL_CITY = 1;
+    private static final int LEVEL_CITY = 1;
 
-    public static final int LEVEL_COUNTY = 2;
+    private static final int LEVEL_COUNTY = 2;
 
     private ProgressDialog progressDialog;
 
@@ -106,6 +106,7 @@ public class ChooseAreaFragment extends Fragment {
         listView = (ListView) view.findViewById(R.id.list_view);
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
+        Log.e(TAG, "onCreateView: view:" + view);
         return view;
     }
 
@@ -188,7 +189,7 @@ public class ChooseAreaFragment extends Fragment {
             currentLevel = LEVEL_CITY;
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
-            String address = "http://guoling.tech/api/china/" + provinceCode;
+            String address = "http://guolin.tech/api/china/" + provinceCode;
             queryFromServer(address, "city");
         }
     }
@@ -211,7 +212,7 @@ public class ChooseAreaFragment extends Fragment {
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
-            String address = "http://guoling.tech/api/china/" + provinceCode + "/" + cityCode;
+            String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
             queryFromServer(address, "county");
         }
     }
@@ -219,12 +220,13 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 根据传入的地址和类型从服务器上查询省市县数据
      * 
-     * @param address
-     * @param type
+     * @param address url地址
+     * @param type 请求数据的类型
      */
     private void queryFromServer(String address, final String type) {
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
+            @NonNull
             @Override
             public void onFailure(Call call, IOException e) {
                 // 通过runOnUiThread()方法回到主线程处理逻辑
@@ -248,6 +250,7 @@ public class ChooseAreaFragment extends Fragment {
                 } else if ("county".equals(type)) {
                     result = Utility.handleCountyResponse(responseText, selectedCity.getId());
                 }
+                Log.e(TAG, "onResponse: result is "+ result);
                 if (result) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
